@@ -8,7 +8,7 @@ exports.editUser = (req, res, next) => {
 
     const sql = `
     UPDATE employees
-    SET       emp_admin    =  '${isAdmin}', emp_fname = '${fname}'
+    SET       emp_admin    =  '${isAdmin}'
     WHERE     emp_username =  '${employeeUsername}'
     `;
 

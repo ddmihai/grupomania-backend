@@ -1,3 +1,4 @@
+const e = require('express');
 const db = require('../connection/connection');
 
 // create post 
@@ -44,31 +45,54 @@ exports.deletePost = (req, res, next) => {
 
 // like a post
 exports.likePost = (req, res, next) => {
-    const postID            = req.params.id;
-    const like              = req.body.like;      //int 
-    const readedByUsername  = req.body.readByusername;
-    const seenBy            = [];
+// this inserts a like in the Bridge sql table 
+    const postID        = req.params.id;
+    const employeeID    = req.body.employeeID;
+    const sql           = `INSERT INTO likes
+                           VALUES (1 , ${employeeID}, ${postID})`;
 
-    if (seenBy.includes(readedByUsername) == false) {
-        
-        const stringified = JSON.parse(seenBy);
-
-       const sql    = `UPDATE posts
-                       SET post_likes = post_likes + '${like}',
-                       seen_by    = '${seen}'
-                       WHERE post_ID  = '${postID}'`;
-
-        db.query(sql, (error, result) => {
-        if (error) return res.sendStatus(500);
+    db.query(sql, (error, result) =>{
+        if (error) {
+            throw error;
+        }
 
         else {
-            res.send('created')
+            res.send(result);
         }
     })
 }
 
-    else {
-        res.json({ error: 'Allready liked post'})
-    }
+exports.getPost = (req, res, next) => {
+    const postID = req.params.id;
+    const sql = `
+    SELECT posts.post_ID, posts.post_title, posts.post_subtitle, posts.post_content, employees.emp_username 
+    FROM posts
+    INNER JOIN employees 
+    ON posts.emp_ID = employees.emp_ID
+    WHERE
+    posts.post_ID = '${postID}'
 
+    `;
+
+    db.query(sql, (error, result) =>{
+    if (error) throw error;
+    res.send(result)
+})
 }
+
+exports.getAllPosts = (req, res, next) => {
+    const sql = `
+    SELECT posts.post_ID, posts.post_title, posts.post_subtitle, posts.post_content, employees.emp_username 
+    FROM posts
+    INNER JOIN employees 
+    ON posts.emp_ID = employees.emp_ID
+    `
+
+    db.query(sql, (error, result) =>{
+        if (error) throw error;
+        res.send(result)
+    })
+}
+
+// DELETE COMMENT
+

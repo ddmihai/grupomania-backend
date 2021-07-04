@@ -4,6 +4,7 @@ const app =             express();
 const bodyParser =      require('body-parser');
 app.use(express.json());
 
+
 // cors
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,6 +22,8 @@ const routerOps = require('./routes/userOperations');
 // posts routes
 const routerPosts = require('./routes/postsRoutes');
 
+// posts routes
+const commRouter = require('./routes/comments');
 
 
 // ENDPOINTS------------------------------------------------------------
@@ -32,6 +35,8 @@ app.use('/api', routerOps);             //modify an user
 // posts routes
 app.use('/api', routerPosts);           //posts routers
 
+// comments routes
+app.use('/api', commRouter); 
 
 
 
